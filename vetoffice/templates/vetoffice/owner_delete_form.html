@@ -1,0 +1,13 @@
+{% extends "./base.html" %}
+
+{% block content %}
+
+<h2>Delete Owner</h2>
+<form action="" method="post">
+    <div>
+        {% csrf_token %}
+        <p>Are you sure you want to delete owner "{{ object }}"</p>
+        <input type="submit" value="Confirm">
+    </div>
+</form>
+{% endblock %}
