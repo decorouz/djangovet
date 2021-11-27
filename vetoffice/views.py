@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.http.response import HttpResponse
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -7,6 +9,25 @@ from .forms import OwnerCreateForm, OwnerUpdateForm, PatientCreateForm, PatientU
 
 
 # Create your views here.
+def login_view(request):
+    context = {
+
+        "login_view": "active"
+    }
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+
+        user = authenticate(request,
+                            username=username,
+                            password=password)
+        if user is not None:
+            return redirect("home")
+        else:
+            return HttpResponse("invalid credentials")
+
+    return render(request, "registration/login.html", context)
 
 
 def home(request):

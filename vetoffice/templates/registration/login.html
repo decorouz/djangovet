@@ -1,0 +1,14 @@
+{% block content %}
+<h1>Login! </h1>
+<form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" name="username" placeholder="Username">
+        <label for="password">Password:</label>
+        <input type="text" name="password" placeholder="Password">
+        <input type="submit" name="" value="Login">
+    </div>
+</form>
+{% endblock %}
+
