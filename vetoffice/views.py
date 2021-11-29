@@ -1,6 +1,10 @@
 from django.http.response import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -9,71 +13,63 @@ from .forms import OwnerCreateForm, OwnerUpdateForm, PatientCreateForm, PatientU
 
 
 # Create your views here.
-def login_view(request):
-    context = {
 
-        "login_view": "active"
-    }
-
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-
-        user = authenticate(request,
-                            username=username,
-                            password=password)
-        if user is not None:
-            return redirect("home")
-        else:
-            return HttpResponse("invalid credentials")
-
-    return render(request, "registration/login.html", context)
+def logout_view(request):
+    logout(request)
+    return redirect("home")
 
 
+@login_required
 def home(request):
-    context = {"name": "Adeyemi"}
+    context = {"name": request.user.username}
     return render(request, 'vetoffice/home.html', context)
 
 
-class OwnerList(ListView):
+class SignUp(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy("login")
+    template_name = "registration/signup.html"
+
+
+class OwnerList(LoginRequiredMixin, ListView):
     model = Owner
 
 
-class OwnerCreate(CreateView):
+class OwnerCreate(LoginRequiredMixin, CreateView):
     model = Owner
     template_name = 'vetoffice/owner_create_form.html'
     form_class = OwnerCreateForm
 
 
-class OwnerUpdate(UpdateView):
+class OwnerUpdate(LoginRequiredMixin, UpdateView):
     model = Owner
     template_name = "vetoffice/owner_update_form.html"
     form_class = OwnerUpdateForm
 
 
-class OwenerDelete(DeleteView):
+class OwenerDelete(LoginRequiredMixin, DeleteView):
     model = Owner
     template_name = "vetoffice/owner_delete_form.html"
     success_url = "/owner/list"
 
 
-class PatientList(ListView):
+class PatientList(LoginRequiredMixin, ListView):
     model = Patient
 
 
-class PatientCreate(CreateView):
-    models = Patient
+class PatientCreate(LoginRequiredMixin, CreateView):
+    model = Patient
     template_name = "vetoffice/patient_create_form.html"
     form_class = PatientCreateForm
 
 
-class PatientUpdate(UpdateView):
-    models = Patient
+class PatientUpdate(LoginRequiredMixin, UpdateView):
+    model = Patient
     template_name = "vetoffice/patient_update_form.html"
     form_class = PatientUpdateForm
 
 
-class PatientDelete(DeleteView):
-    models = Patient
+class PatientDelete(LoginRequiredMixin, DeleteView):
+    model = Patient
     template_name = "vetoffice/patient_delete_form.html"
     success_url = "/patient/list"

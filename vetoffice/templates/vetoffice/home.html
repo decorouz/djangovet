@@ -1,10 +1,10 @@
-{% extends 'vetoffice/base.html' %}
+{% extends './base.html' %}
 {% block content %}
 
-{% for pet in pets %}
-<p>{{ pet.petname }}, {{ pet.animal_type}}</p>
-{% endfor %}
-
+<div>
+    <a href="{% url 'ownerlist' %}">Owners</a>
+    <a href="{% url 'patientlist' %}">Patients</a>
+    <a href="">Appointments</a>
+</div>
+<a href="{% url 'logout' %}">Log Out</a>
 {% endblock %}
-
-
