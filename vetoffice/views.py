@@ -21,7 +21,7 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    context = {"name": request.user.username}
+    context = {"name": request.user}
     return render(request, 'vetoffice/home.html', context)
 
 
